@@ -156,7 +156,7 @@ describe("SolidFundr", function () {
       expect(donation[1]).to.be.eq(otherAccount2.address);
     });
 
-    it("Shoul close fund if target amount is reached", async function () {
+    it("Should close fund if target amount is reached", async function () {
       const { contract, otherAccount, otherAccount2 } = await loadFixture(
         deployFixture
       );
@@ -171,9 +171,12 @@ describe("SolidFundr", function () {
         "1"
       );
 
-      // Get balance of target user before fund is closed
+      // Get balances of target user and donator user before fund is closed
       const balanceBefore = await hre.ethers.provider.getBalance(
         otherAccount2.address
+      );
+      const balanceDonatorBefore = await hre.ethers.provider.getBalance(
+        otherAccount.address
       );
 
       // Do the donation
@@ -201,7 +204,13 @@ describe("SolidFundr", function () {
       const balanceAfter = await hre.ethers.provider.getBalance(
         otherAccount2.address
       );
+      const balanceDonatorAfter = await hre.ethers.provider.getBalance(
+        otherAccount.address
+      );
       expect(Number(balanceAfter)).to.be.eq(Number(balanceBefore + amount));
+      expect(Number(balanceDonatorAfter)).to.be.lessThan(
+        Number(balanceDonatorBefore - amount)
+      );
     });
 
     it("Shouldn't be able to donate to closed fund", async function () {
