@@ -1,0 +1,21 @@
+{
+  "name": "hardhat-next-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.15.0",
+    "dotenv": "^16.1.4"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.1"
+  }
+}
