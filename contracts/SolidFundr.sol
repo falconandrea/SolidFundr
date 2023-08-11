@@ -69,7 +69,9 @@ contract SolidFundr {
     }
 
     // Function to create a donation to a fund
-    function donate(uint256 fundId, uint256 amount) public payable {
+    function donate(uint256 fundId) public payable {
+        uint256 amount = msg.value;
+
         if (amount <= 0) revert AmountLessThanZero();
         if (fundId >= fundCounter) revert FundDoesNotExist();
         if (listFunds[fundId].completed == true) revert FundAlreadyCompleted();
