@@ -116,6 +116,19 @@ contract SolidFundr {
         return listFunds;
     }
 
+    // Function to return list of donations of a fund
+    function getDonations(
+        uint256 fundId
+    ) public view returns (Donation[] memory) {
+        if (fundId >= fundCounter) revert FundDoesNotExist();
+        return contributionFunds[fundId];
+    }
+
+    // Function to return total amount of contributions of an author
+    function getContributions(address author) public view returns (uint256) {
+        return contributionAuthors[author];
+    }
+
     // Function to receive Ether. msg.data must be empty
     receive() external payable {}
 
