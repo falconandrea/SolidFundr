@@ -30,6 +30,20 @@ Traditional fundraising methods often involve intermediaries, administrative com
 
 - **Efficiency:** Automated processes eliminate the need for manual intervention, streamlining the fundraising lifecycle.
 
+## Future Developments
+
+This project is just the beginning, and there are several exciting improvements and features that can be added to enhance its functionality and versatility. Here are some of the potential future developments:
+
+### Fund Cancellation and Refunds
+
+One important feature on the horizon is the ability to cancel a fundraising campaign. In cases where the target amount is not reached or unforeseen circumstances arise, allowing the cancellation of a campaign and refunding the contributors could greatly enhance user trust and satisfaction.
+
+### Contract Upgradability
+
+As the project grows and evolves, you might consider making the contract upgradable. This would enable you to seamlessly introduce new features and enhancements without disrupting the existing campaigns or user experience. Utilizing industry-standard practices for contract upgradability, such as OpenZeppelin's upgradeable contracts, can help ensure a smooth transition to future versions.
+
+These future developments will contribute to the overall robustness and usability of the Decentralized Fundraiser project, making it an even more powerful tool for facilitating decentralized fundraising campaigns.
+
 ## Disclaimer
 
 ### Note: This Project was created for an Hackathon
