@@ -33,6 +33,13 @@ contract SolidFundr {
     event DonationCreated(uint256 amount, address author);
     event FundCompleted(uint256 id);
 
+    // Custom errors
+    error FundDoesNotExist();
+    error AmountLessThanZero();
+    error AddressNotValid();
+    error FundAlreadyCompleted();
+    error SendAmountFailed();
+
     // Function to create a new Fund
     function createFund(
         uint256 targetAmount,
@@ -40,8 +47,8 @@ contract SolidFundr {
         string calldata title,
         string calldata description
     ) public {
-        require(targetAmount > 0, "Amount must be greater than 0");
-        require(targetAddress != address(0), "Target address cannot be 0");
+        if (targetAmount <= 0) revert AmountLessThanZero();
+        if (targetAddress == address(0)) revert AddressNotValid();
 
         // Create new fund
         Fund memory newFund = Fund(
@@ -63,9 +70,9 @@ contract SolidFundr {
 
     // Function to create a donation to a fund
     function donate(uint256 fundId, uint256 amount) public payable {
-        require(amount > 0, "Amount must be greater than 0");
-        require(fundId < fundCounter, "Fund does not exist");
-        require(listFunds[fundId].completed == false, "Fund already completed");
+        if (amount <= 0) revert AmountLessThanZero();
+        if (fundId >= fundCounter) revert FundDoesNotExist();
+        if (listFunds[fundId].completed == true) revert FundAlreadyCompleted();
 
         // Create new donation
         Donation memory donation = Donation(amount, msg.sender);
@@ -87,14 +94,14 @@ contract SolidFundr {
 
     // Internal function to send amount of fund if it is completed
     function sendFund(uint256 fundId) internal {
-        require(fundId < fundCounter, "Fund does not exist");
-        require(listFunds[fundId].completed == false, "Fund already completed");
+        if (fundId >= fundCounter) revert FundDoesNotExist();
+        if (listFunds[fundId].completed == true) revert FundAlreadyCompleted();
 
         // Send amount of fund to the target address
         (bool result, ) = payable(listFunds[fundId].targetAddress).call{
             value: listFunds[fundId].amount
         }("");
-        require(result, "Send funds failed");
+        if (result == false) revert SendAmountFailed();
 
         // Set completed the fund
         listFunds[fundId].completed = true;
