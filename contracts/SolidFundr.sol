@@ -72,13 +72,12 @@ contract SolidFundr {
     function donate(uint256 fundId) public payable {
         uint256 amount = msg.value;
 
+        // Checks
         if (amount <= 0) revert AmountLessThanZero();
         if (fundId >= fundCounter) revert FundDoesNotExist();
         if (listFunds[fundId].completed == true) revert FundAlreadyCompleted();
 
-        // Create new donation
-        Donation memory donation = Donation(amount, msg.sender);
-        contributionFunds[fundId].push(donation);
+        // Update amount of contribution for author
         contributionAuthors[msg.sender] =
             contributionAuthors[msg.sender] +
             amount;
@@ -90,6 +89,10 @@ contract SolidFundr {
         if (listFunds[fundId].amount >= listFunds[fundId].targetAmount) {
             sendFund(fundId);
         }
+
+        // Create new donation
+        Donation memory donation = Donation(amount, msg.sender);
+        contributionFunds[fundId].push(donation);
 
         emit DonationCreated(amount, msg.sender);
     }
