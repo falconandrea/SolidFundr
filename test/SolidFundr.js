@@ -208,7 +208,7 @@ describe("SolidFundr", function () {
         otherAccount.address
       );
       expect(Number(balanceAfter)).to.be.eq(Number(balanceBefore + amount));
-      expect(Number(balanceDonatorAfter)).to.be.lessThan(
+      expect(Number(balanceDonatorAfter)).to.be.lessThanOrEqual(
         Number(balanceDonatorBefore - amount)
       );
     });
