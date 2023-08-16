@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./*"],
-      "artifactsContracts/*": ["./../artifacts/contracts/*"]
-    }
-  }
-}
