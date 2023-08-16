@@ -2,8 +2,11 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import { useAccount } from "wagmi";
 
 const Home: NextPage = () => {
+  const { address, isConnected } = useAccount();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,11 +20,6 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <ConnectButton />
-
-        <h1 className={styles.title}>
-          Welcome to <a href="">RainbowKit</a> + <a href="">wagmi</a> +{" "}
-          <a href="https://nextjs.org">Next.js!</a>
-        </h1>
       </main>
 
       <footer className={styles.footer}>
