@@ -7,12 +7,27 @@ const Card: NextComponentType = () => {
 
   // Esempio di indirizzo del wallet del creatore
   const creatorAddress = "0x1234567890123456789012345678901234567890";
-  const creationDate = "August 16, 2023"; // Esempio di data di creazione
+  const creationDate = Date.now();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(creatorAddress);
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  /**
+   * Format a timestamp into a human-readable date string.
+   *
+   * @param timestamp - The timestamp to format.
+   * @returns The formatted date string.
+   */
+  const formatTimestamp = (timestamp: number): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(timestamp).toLocaleDateString("en-US", options);
   };
 
   return (
@@ -39,7 +54,9 @@ const Card: NextComponentType = () => {
                 : `${creatorAddress.slice(0, 6)}...${creatorAddress.slice(-4)}`}
             </button>
           </div>
-          <p className="text-gray-500 text-xs">Created: {creationDate}</p>
+          <p className="text-gray-500 text-xs" suppressHydrationWarning>
+            Created: {formatTimestamp(creationDate)}
+          </p>
         </div>
         <ProgressBar />
         <button className="bg-orange-400 hover:bg-orange-600 py-3 px-8 mt-4 rounded text-sm font-semibold">

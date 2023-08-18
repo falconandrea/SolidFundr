@@ -1,83 +1,91 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useAccount } from "wagmi";
+"use client";
 
 import Card from "./../components/Card";
+import { ReactElement, useState } from "react";
 
-const Home: NextPage = () => {
-  const { address, isConnected } = useAccount();
+import solidFundr from "../abi/SolidFundr.json";
+import { useContractRead } from "wagmi";
+import Link from "next/link";
+import { NextPageWithLayout } from "./_app";
+import Layout from "../components/Layout";
+
+const Home: NextPageWithLayout = () => {
+  const [campaigns, setCampaigns] = useState([]);
+
+  useContractRead({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: solidFundr.abi,
+    functionName: "getFunds",
+    onSuccess: (data) => {
+      setCampaigns(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   return (
     <div>
-      <Head>
-        <title>SolidFundr</title>
-        <meta
-          content="Welcome to SolidFundr, the platform revolutionizing fundraising with
-          blockchain technology."
-          name="description"
-        />
-        <link href="/favicon.ico" rel="icon" />
-      </Head>
-
-      <header className="flex justify-end p-4">
-        <ConnectButton />
-      </header>
-      <main className="px-8">
-        <h1 className="text-4xl text-center font-semibold mb-4">SolidFundr</h1>
-        <p className="text-center text-lg mb-8">
-          Welcome to SolidFundr, the platform revolutionizing fundraising with
-          blockchain technology.
-          <br />
-          SolidFundr leverages the power of blockchain to ensure all campaign
-          information is publicly accessible and tamper-proof. <br />
-          With no intermediaries involved, smart contracts automatically
-          transfer funds to the designated recipient once the budget is reached.
-        </p>
-
-        <section className="mb-8">
+      <main>
+        <section className="px-8 pt-8">
+          <h1 className="text-4xl text-center font-semibold mb-4">
+            SolidFundr
+          </h1>
+          <p className="text-center text-lg mb-8">
+            Welcome to SolidFundr, the platform revolutionizing fundraising with
+            blockchain technology.
+            <br />
+            SolidFundr leverages the power of blockchain to ensure all campaign
+            information is publicly accessible and tamper-proof. <br />
+            With no intermediaries involved, smart contracts automatically
+            transfer funds to the designated recipient once the budget is
+            reached.
+          </p>
+        </section>
+        <section className="mb-8 px-8">
           <h2 className="text-lg text-center font-semibold mb-4">
             Last Three Campaigns
           </h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card />
-            <Card />
-            <Card />
-            {/* Aggiungi altre istanze del componente Card per le altre raccolte fondi */}
-          </div>
-          <p className="text-center mt-4">
-            <a href="#" className="text-blue-500 font-semibold hover:underline">
-              View Full Campaign List
-            </a>
-          </p>
+          {campaigns.length > 0 ? (
+            <div>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Card />
+              </div>
+              <p className="text-center mt-4">
+                <Link
+                  href="/campaigns"
+                  title="View full campaign list"
+                  className="text-blue-500 font-semibold hover:underline"
+                >
+                  View Full Campaign List
+                </Link>
+              </p>
+            </div>
+          ) : (
+            <p className="text-center italic py-8">No campaigns yet</p>
+          )}
         </section>
 
-        <section className="mb-8 text-center">
-          <p className="text-lg mb-4">
+        <section className="text-center p-8 bg-orange-100">
+          <p className="text-lg mb-8">
             Anyone can open their own fundraising campaign and make a
             difference.
           </p>
-          <button className="bg-orange-400 hover:bg-orange-600 py-3 px-8 rounded text-sm font-semibold">
+          <Link
+            href="/new"
+            title="Create new campaign"
+            className="bg-orange-400 hover:bg-orange-600 py-4 px-8 rounded text-sm font-semibold"
+          >
             Create New Campaign
-          </button>
+          </Link>
         </section>
       </main>
-      <footer className="text-center p-4 mt-4 bg-orange-400">
-        <p>
-          &copy; 2023 SolidFundr - Created by{" "}
-          <a
-            className="underline font-bold"
-            href="https://linktr.ee/falconandrea"
-            title=""
-            target="_blank"
-            rel="noreferrer"
-          >
-            Falcon Andrea
-          </a>
-        </p>
-      </footer>
     </div>
   );
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Home;
