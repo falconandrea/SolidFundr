@@ -4,12 +4,10 @@ import Header from "./Header";
 import Head from "next/head";
 
 import Providers from "../pages/providers";
+import LoadingSpinner from "./LoadingSpinner";
+import { LayoutProps } from "../utils/interfaces-types";
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
-
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children, isLoading }: LayoutProps) => {
   return (
     <>
       <Providers>
@@ -23,7 +21,10 @@ const Layout = ({ children }: LayoutProps) => {
           <link href="/favicon.ico" rel="icon" />
         </Head>
         <Header />
-        <main>{children}</main>
+        <main>
+          {isLoading && <LoadingSpinner />}
+          {children}
+        </main>
         <Footer />
       </Providers>
     </>

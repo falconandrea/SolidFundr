@@ -1,13 +1,14 @@
 import { NextComponentType } from "next";
 import ProgressBar from "./ProgressBar";
 import { useState } from "react";
+import { CardProps } from "../utils/interfaces-types";
 
-const Card: NextComponentType = () => {
+const Card: NextComponentType<CardProps> = ({ campaign }: CardProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Esempio di indirizzo del wallet del creatore
-  const creatorAddress = "0x1234567890123456789012345678901234567890";
-  const creationDate = Date.now();
+  const creatorAddress = campaign.creator;
+  const targetAddress = campaign.targetAddress;
+  const creationDate = Number(campaign.creationDate) * 1000;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(creatorAddress);
@@ -34,15 +35,10 @@ const Card: NextComponentType = () => {
     <div className="bg-white p-10 rounded-lg border border-gray-300">
       <div>
         <h1 className="text-xl font-bold text-ellipsis overflow-hidden truncate">
-          Acquisto nuovo computer per lavoro
+          {campaign.title}
         </h1>
-        <p className="text-xs line-clamp-3">
-          Ho bisogno di comprare un nuovo computer per lavorare online, deve
-          essere performante, con una buona quantità di ram e di harddisk. Se
-          possibile sarebbe figo prendere anche monitor, tastiera e mouse.
-        </p>
+        <p className="text-xs line-clamp-3">{campaign.description}</p>
         <div className="mt-4 mb-6">
-          <p className="text-gray-600">1.5 ETH / 2 ETH (75%)</p>
           <div className="flex items-center space-x-2">
             <p className="text-gray-500 text-xs">Creator:</p>
             <button
@@ -54,11 +50,22 @@ const Card: NextComponentType = () => {
                 : `${creatorAddress.slice(0, 6)}...${creatorAddress.slice(-4)}`}
             </button>
           </div>
+          <div className="flex items-center space-x-2">
+            <p className="text-gray-500 text-xs">Target:</p>
+            <button
+              className="text-blue-500 text-xs font-semibold hover:underline"
+              onClick={copyToClipboard}
+            >
+              {copySuccess
+                ? "Copied!"
+                : `${targetAddress.slice(0, 6)}...${targetAddress.slice(-4)}`}
+            </button>
+          </div>
           <p className="text-gray-500 text-xs" suppressHydrationWarning>
             Created: {formatTimestamp(creationDate)}
           </p>
         </div>
-        <ProgressBar />
+        <ProgressBar amount={campaign.amount} target={campaign.targetAmount} />
         <button className="bg-orange-400 hover:bg-orange-600 py-3 px-8 mt-4 rounded text-sm font-semibold">
           View Campaign
         </button>

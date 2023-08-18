@@ -8,7 +8,7 @@ const Footer: NextComponentType = () => {
         <a
           className="underline font-bold"
           href="https://linktr.ee/falconandrea"
-          title=""
+          title="My links"
           target="_blank"
           rel="noreferrer"
         >
