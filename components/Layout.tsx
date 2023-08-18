@@ -4,10 +4,9 @@ import Header from "./Header";
 import Head from "next/head";
 
 import Providers from "../pages/providers";
-import LoadingSpinner from "./LoadingSpinner";
 import { LayoutProps } from "../utils/interfaces-types";
 
-const Layout = ({ children, isLoading }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Providers>
@@ -21,10 +20,7 @@ const Layout = ({ children, isLoading }: LayoutProps) => {
           <link href="/favicon.ico" rel="icon" />
         </Head>
         <Header />
-        <main>
-          {isLoading && <LoadingSpinner />}
-          {children}
-        </main>
+        <main>{children}</main>
         <Footer />
       </Providers>
     </>
