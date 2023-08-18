@@ -1,24 +1,32 @@
+"use client";
+
 import { NextPageWithLayout } from "./_app";
 import Layout from "../components/Layout";
-import { ReactElement, useState } from "react";
-import { useAccount } from "wagmi";
+import { ReactElement, useEffect, useState } from "react";
 import solidFundr from "../abi/SolidFundr.json";
-import { prepareWriteContract, writeContract } from "@wagmi/core";
+import { getAccount, prepareWriteContract, writeContract } from "@wagmi/core";
 import { parseEther } from "viem";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const NewCampaign: NextPageWithLayout = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [target, setTarget] = useState("");
+  const [canCreate, setCanCreate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { address, isConnected } = useAccount();
+  useEffect(() => {
+    setIsLoading(true);
+    const account = getAccount();
+    setCanCreate(account.isConnected);
+    setIsLoading(false);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(parseEther(amount));
-
+    setIsLoading(true);
     const config = await prepareWriteContract({
       address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
       abi: solidFundr.abi,
@@ -27,15 +35,17 @@ const NewCampaign: NextPageWithLayout = () => {
     });
     const hash = await writeContract(config);
     console.log(hash);
+    setIsLoading(false);
   };
 
   return (
     <main>
+      {isLoading && <LoadingSpinner />}
       <section className="px-8 py-8">
-        <h1 className="text-4xl text-center font-semibold mb-4">
+        <h1 className="text-4xl text-center font-semibold mb-8">
           Create New Campaign
         </h1>
-        {isConnected ? (
+        {canCreate ? (
           <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
             <div className="mb-4">
               <label
@@ -85,7 +95,7 @@ const NewCampaign: NextPageWithLayout = () => {
                 required
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-8">
               <label
                 htmlFor="amount"
                 className="block text-gray-700 font-semibold mb-2"

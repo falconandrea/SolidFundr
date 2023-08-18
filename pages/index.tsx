@@ -1,32 +1,43 @@
 "use client";
 
 import Card from "./../components/Card";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import solidFundr from "../abi/SolidFundr.json";
-import { useContractRead } from "wagmi";
 import Link from "next/link";
 import { NextPageWithLayout } from "./_app";
 import Layout from "../components/Layout";
 import { Campaign } from "../utils/interfaces-types";
+import { readContract } from "@wagmi/core";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Home: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useContractRead({
-    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-    abi: solidFundr.abi,
-    functionName: "getFunds",
-    onSuccess: (data: Campaign[]) => {
-      setCampaigns(data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchData = async () => {
+      const result: Campaign[] = await getCampaigns();
+      setCampaigns(result);
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  const getCampaigns = async (): Promise<Campaign[]> => {
+    const data = await readContract({
+      address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+      abi: solidFundr.abi,
+      functionName: "getFunds",
+    });
+    return data as Campaign[];
+  };
 
   return (
     <main>
+      {isLoading && <LoadingSpinner />}
       <section className="px-8 pt-8">
         <h1 className="text-4xl text-center font-semibold mb-4">SolidFundr</h1>
         <p className="text-center text-lg mb-8">
