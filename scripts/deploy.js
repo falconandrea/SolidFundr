@@ -7,13 +7,11 @@
 const hre = require("hardhat");
 
 async function main() {
-  const simpleNFT = await hre.ethers.deployContract("SimpleNFT");
+  const solidFundr = await hre.ethers.deployContract("SolidFundr");
 
-  await simpleNFT.waitForDeployment();
+  await solidFundr.waitForDeployment();
 
-  console.log(
-    `SimpleNFT deployed to ${simpleNFT.target}`
-  );
+  console.log(`SolidFundr deployed to ${solidFundr.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
