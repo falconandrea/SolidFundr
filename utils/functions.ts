@@ -1,6 +1,11 @@
 import { Campaign, Donation } from "./interfaces-types";
 import solidFundr from "../abi/SolidFundr.json";
-import { prepareWriteContract, readContract, writeContract } from "@wagmi/core";
+import {
+  prepareWriteContract,
+  readContract,
+  waitForTransaction,
+  writeContract,
+} from "@wagmi/core";
 import { parseEther } from "viem";
 
 /**
@@ -92,6 +97,13 @@ export const createCampaign = async (
   return hash;
 };
 
+/**
+ * Makes a donation.
+ *
+ * @param {number} id - The ID of the campaign to donate.
+ * @param {string} amount - The amount to donate.
+ * @return {Promise<{ result: any; hash: string; }>} A Promise that resolves to an object containing the result and hash of the donation.
+ */
 export const makeDonation = async (id: number, amount: string) => {
   const config = await prepareWriteContract({
     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
@@ -101,5 +113,8 @@ export const makeDonation = async (id: number, amount: string) => {
     value: parseEther(amount),
   });
   const { hash } = await writeContract(config);
-  return hash;
+  const result = await waitForTransaction({
+    hash,
+  });
+  return { result, hash };
 };

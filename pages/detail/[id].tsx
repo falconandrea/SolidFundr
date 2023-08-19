@@ -11,24 +11,18 @@ import { parseErrors } from "../../utils/parseErrors";
 import { formatEther } from "viem";
 import { getAccount, watchAccount } from "@wagmi/core";
 import DonateForm from "../../components/DonateForm";
+import CopyAddress from "../../components/CopyAddress";
 
 const DetailPage: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messageAlert, setMessageAlert] = useState("");
   const [messageStatus, setMessageStatus] = useState("");
   const [campaign, setCampaign] = useState<Campaign>();
-  const [copyAddress, setCopyAddress] = useState("");
   const [listDonations, setListDonations] = useState<Donation[]>([]);
   const [campaignId, setCampaignId] = useState(-1);
   const [canDonate, setCanDonate] = useState(false);
 
   const router = useRouter();
-
-  const copyToClipboard = (address: string) => {
-    navigator.clipboard.writeText(address);
-    setCopyAddress(address);
-    setTimeout(() => setCopyAddress(""), 2000);
-  };
 
   const checkAccount = watchAccount((account) => {
     setIsLoading(true);
@@ -36,6 +30,19 @@ const DetailPage: NextPageWithLayout = () => {
     setCanDonate(account.isConnected);
     setIsLoading(false);
   });
+
+  const getCampaignData = async (id: number) => {
+    const result: Campaign | null = await getCampaign(id);
+    if (result) {
+      setCampaign(result);
+
+      const donations = await getDonations(id);
+      setListDonations(donations);
+    } else {
+      setMessageAlert(parseErrors("FundDoesNotExist"));
+      setMessageStatus("error");
+    }
+  };
 
   useEffect(() => {
     if (router.isReady) {
@@ -46,29 +53,8 @@ const DetailPage: NextPageWithLayout = () => {
       const id = parseInt(router.query.id as string);
       setCampaignId(id);
 
-      const fetchData = async () => {
-        // Get campaign data
-        const result: Campaign | null = await getCampaign(id);
-        if (result) {
-          setCampaign(result);
-
-          // Get list of donations
-          try {
-            const donations = await getDonations(id);
-            setListDonations(donations);
-          } catch (error: any) {
-            setMessageStatus("error");
-            setMessageAlert(parseErrors(error.toString()));
-          }
-        } else {
-          setMessageAlert(parseErrors("FundDoesNotExist"));
-          setMessageStatus("error");
-        }
-
-        setIsLoading(false);
-      };
-
-      fetchData();
+      getCampaignData(id);
+      setIsLoading(false);
     }
   }, [router.isReady]);
 
@@ -86,31 +72,11 @@ const DetailPage: NextPageWithLayout = () => {
               <p className="mb-4">{campaign.description}</p>
               <div className="mb-4">
                 <p className="text-gray-500 text-xs">Creator:</p>
-                <button
-                  className="text-blue-500 text-xs font-semibold hover:underline"
-                  onClick={() => copyToClipboard(campaign.creator)}
-                >
-                  {copyAddress && copyAddress == campaign.creator
-                    ? "Copied!"
-                    : `${campaign.creator.slice(
-                        0,
-                        6
-                      )}...${campaign.creator.slice(-4)}`}
-                </button>
+                <CopyAddress address={campaign.creator} />
               </div>
               <div className="mb-4">
                 <p className="text-gray-500 text-xs">Target:</p>
-                <button
-                  className="text-blue-500 text-xs font-semibold hover:underline"
-                  onClick={() => copyToClipboard(campaign.targetAddress)}
-                >
-                  {copyAddress && copyAddress == campaign.targetAddress
-                    ? "Copied!"
-                    : `${campaign.targetAddress.slice(
-                        0,
-                        6
-                      )}...${campaign.targetAddress.slice(-4)}`}
-                </button>
+                <CopyAddress address={campaign.targetAddress} />
               </div>
               <ProgressBar
                 amount={campaign.amount}
@@ -120,32 +86,45 @@ const DetailPage: NextPageWithLayout = () => {
                 Donations List
               </h2>
               {listDonations && listDonations.length > 0 ? (
-                <ul className="list-none pl-8 text-right">
+                <table className="list-none pl-8 mt-4 w-1/2 mx-auto">
                   {listDonations.map((donation, index) => (
-                    <li key={index}>
-                      {formatEther(donation.amount)} ETH from {donation.author}
-                    </li>
+                    <tr key={index}>
+                      <td className="text-right">
+                        {formatEther(donation.amount)} ETH
+                      </td>
+                      <td className="text-right">
+                        <CopyAddress address={donation.author} />
+                      </td>
+                    </tr>
                   ))}
-                </ul>
+                </table>
               ) : (
                 <p className="text-center italic py-8">
                   No donations yet, be the first!
                 </p>
               )}
+              <hr className="mt-8" />
               <div className="mt-8">
-                <h2 className="text-center font-semibold text-lg mb-4">
+                <h2 className="text-center font-semibold text-lg ">
                   Make a Donation
                 </h2>
-                {canDonate ? (
-                  <DonateForm
-                    campaignId={campaignId}
-                    setIsLoading={setIsLoading}
-                    setMessageAlert={setMessageAlert}
-                    setMessageStatus={setMessageStatus}
-                  />
+                {!campaign.completed ? (
+                  canDonate ? (
+                    <DonateForm
+                      campaignId={campaignId}
+                      setIsLoading={setIsLoading}
+                      setMessageAlert={setMessageAlert}
+                      setMessageStatus={setMessageStatus}
+                      getCampaignData={getCampaignData}
+                    />
+                  ) : (
+                    <p className="text-center italic py-8">
+                      You need to connect your wallet
+                    </p>
+                  )
                 ) : (
                   <p className="text-center italic py-8">
-                    You need to connect your wallet
+                    Campaign has been completed
                   </p>
                 )}
               </div>

@@ -7,11 +7,13 @@ const DonateForm = ({
   setIsLoading,
   setMessageAlert,
   setMessageStatus,
+  getCampaignData,
 }: {
   campaignId: number;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setMessageAlert: React.Dispatch<React.SetStateAction<string>>;
   setMessageStatus: React.Dispatch<React.SetStateAction<string>>;
+  getCampaignData: (id: number) => void;
 }) => {
   const [donationAmount, setDonationAmount] = useState("");
   const [hash, setHash] = useState("");
@@ -23,13 +25,17 @@ const DonateForm = ({
     setIsLoading(true);
 
     try {
-      const hash = await makeDonation(campaignId, donationAmount);
+      const { result, hash } = await makeDonation(campaignId, donationAmount);
       setHash(hash);
 
+      console.log(result);
       setMessageAlert("Transaction sent");
 
       // Reset form
       setDonationAmount("");
+
+      // Reload campaign data
+      getCampaignData(campaignId);
     } catch (error: any) {
       setMessageStatus("error");
       setMessageAlert(parseErrors(error.toString()));

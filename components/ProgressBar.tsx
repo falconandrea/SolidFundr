@@ -4,11 +4,12 @@ import { ProgressBarProps } from "../utils/interfaces-types";
 const ProgressBar = ({ amount, target }: ProgressBarProps) => {
   const amountValue = formatEther(amount);
   const targetValue = formatEther(target);
-  const percentage =
+  let percentage =
     parseFloat(targetValue) > 0
       ? (parseFloat(amountValue) / parseFloat(targetValue)) * 100
       : 0;
-  const widthStyle = { width: `${percentage < 100 ? percentage : 100}%` };
+  percentage = percentage < 100 ? percentage : 100;
+  const widthStyle = { width: `${percentage}%` };
 
   return (
     <div>
