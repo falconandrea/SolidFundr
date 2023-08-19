@@ -3,15 +3,20 @@ export type LayoutProps = {
 };
 
 export type Campaign = {
-  id: number;
-  creator: string;
+  id: bigint;
+  creator: `0x${string}`;
   creationDate: bigint;
   amount: bigint;
   targetAmount: bigint;
-  targetAddress: string;
+  targetAddress: `0x${string}`;
   title: string;
   description: string;
   completed: boolean;
+};
+
+export type Donation = {
+  amount: bigint;
+  author: `0x${string}`;
 };
 
 export type CardProps = {
