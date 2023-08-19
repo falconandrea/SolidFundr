@@ -1,6 +1,4 @@
-import { NextComponentType } from "next";
-
-const LoadingSpinner: NextComponentType = () => {
+const LoadingSpinner = () => {
   return (
     <div className="fixed w-full h-full top-0 left-0 z-10 bg-white">
       <div className="flex justify-center items-center h-screen">

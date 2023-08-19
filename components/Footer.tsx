@@ -1,6 +1,4 @@
-import { NextComponentType } from "next";
-
-const Footer: NextComponentType = () => {
+const Footer = () => {
   return (
     <footer className="text-center p-4 bg-orange-400">
       <p>

@@ -52,7 +52,7 @@ const NewCampaign: NextPageWithLayout = () => {
       setDescription("");
       setAmount("");
       setTarget("");
-    } catch (error) {
+    } catch (error: any) {
       setMessageStatus("error");
       setMessageAlert(parseErrors(error.toString()));
     }

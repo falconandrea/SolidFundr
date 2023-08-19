@@ -1,11 +1,7 @@
-import { FunctionComponent } from "react";
 import { formatEther } from "viem";
 import { ProgressBarProps } from "../utils/interfaces-types";
 
-const ProgressBar: FunctionComponent<ProgressBarProps> = ({
-  amount,
-  target,
-}) => {
+const ProgressBar = ({ amount, target }: ProgressBarProps) => {
   const amountValue = formatEther(amount);
   const targetValue = formatEther(target);
   const percentage =

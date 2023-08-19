@@ -1,8 +1,7 @@
-import { NextComponentType } from "next";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 
-const Header: NextComponentType = () => {
+const Header = () => {
   return (
     <header className="flex justify-between items-center p-4 border-b-2 align border-gray-300">
       <Link

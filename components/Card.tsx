@@ -1,9 +1,8 @@
-import { NextComponentType } from "next";
 import ProgressBar from "./ProgressBar";
 import { useState } from "react";
 import { CardProps } from "../utils/interfaces-types";
 
-const Card: NextComponentType<CardProps> = ({ campaign }: CardProps) => {
+const Card = ({ campaign }: CardProps) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const creatorAddress = campaign.creator;
