@@ -9,18 +9,17 @@ import ProgressBar from "../../components/ProgressBar";
 import { getCampaign, getDonations } from "../../utils/functions";
 import { parseErrors } from "../../utils/parseErrors";
 import { formatEther } from "viem";
-import { watchAccount } from "@wagmi/core";
+import { getAccount, watchAccount } from "@wagmi/core";
+import DonateForm from "../../components/DonateForm";
 
 const DetailPage: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messageAlert, setMessageAlert] = useState("");
   const [messageStatus, setMessageStatus] = useState("");
   const [campaign, setCampaign] = useState<Campaign>();
-  const [donationAmount, setDonationAmount] = useState("");
   const [copyAddress, setCopyAddress] = useState("");
-  const [hash, setHash] = useState("");
   const [listDonations, setListDonations] = useState<Donation[]>([]);
-
+  const [campaignId, setCampaignId] = useState(-1);
   const [canDonate, setCanDonate] = useState(false);
 
   const router = useRouter();
@@ -40,8 +39,12 @@ const DetailPage: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (router.isReady) {
+      const account = getAccount();
+      setCanDonate(account.isConnected);
+
       setIsLoading(true);
       const id = parseInt(router.query.id as string);
+      setCampaignId(id);
 
       const fetchData = async () => {
         // Get campaign data
@@ -129,48 +132,17 @@ const DetailPage: NextPageWithLayout = () => {
                   No donations yet, be the first!
                 </p>
               )}
-
               <div className="mt-8">
                 <h2 className="text-center font-semibold text-lg mb-4">
                   Make a Donation
                 </h2>
                 {canDonate ? (
-                  <form className="bg-gray-100 p-4 rounded-md">
-                    <div className="mb-8">
-                      <label
-                        htmlFor="amount"
-                        className="block text-gray-700 font-semibold mb-2"
-                      >
-                        Amount (ETH)
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        id="amount"
-                        className="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                        value={donationAmount}
-                        onChange={(e) => setDonationAmount(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="bg-orange-400 hover:bg-orange-600 py-3 px-8 rounded text-sm font-semibold"
-                    >
-                      Send
-                    </button>
-                    {hash && (
-                      <p className="text-center mt-8">
-                        <a
-                          href={`https://sepolia.etherscan.io/tx/${hash}`}
-                          title="View full campaign list"
-                          className="text-blue-500 font-semibold hover:underline"
-                        >
-                          View Transaction
-                        </a>
-                      </p>
-                    )}
-                  </form>
+                  <DonateForm
+                    campaignId={campaignId}
+                    setIsLoading={setIsLoading}
+                    setMessageAlert={setMessageAlert}
+                    setMessageStatus={setMessageStatus}
+                  />
                 ) : (
                   <p className="text-center italic py-8">
                     You need to connect your wallet

@@ -91,3 +91,15 @@ export const createCampaign = async (
   const { hash } = await writeContract(config);
   return hash;
 };
+
+export const makeDonation = async (id: number, amount: string) => {
+  const config = await prepareWriteContract({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: solidFundr.abi,
+    functionName: "donate",
+    args: [id],
+    value: parseEther(amount),
+  });
+  const { hash } = await writeContract(config);
+  return hash;
+};
