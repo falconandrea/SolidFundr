@@ -39,7 +39,12 @@ const NewCampaign: NextPageWithLayout = () => {
     setIsLoading(true);
 
     try {
-      const hash = await createCampaign(amount, target, title, description);
+      const { result, hash } = await createCampaign(
+        amount,
+        target,
+        title,
+        description
+      );
       setHash(hash);
 
       setMessageAlert("Transaction sent");

@@ -27,15 +27,39 @@ export const formatTimestamp = (timestamp: bigint): string => {
 /**
  * Retrieves a list of campaigns from the contract.
  *
- * @return {Promise<Campaign[]>} A promise that resolves to an array of Campaign objects.
+ * @param {string} sortOrder - The order in which the campaigns should be sorted. Default is "ASC".
+ * @param {boolean} withCompleted - Whether to include completed campaigns in the result. Default is true.
+ * @param {number} limit - The maximum number of campaigns to retrieve. Default is 0 (retrieve all).
+ * @return {Promise<Campaign[]>} - A promise that resolves to an array of Campaign objects.
  */
-export const getCampaigns = async (): Promise<Campaign[]> => {
-  const data = await readContract({
+export const getCampaigns = async (
+  sortOrder: "ASC" | "DESC" = "ASC",
+  withCompleted: boolean = true,
+  limit: number = 0
+): Promise<Campaign[]> => {
+  const data = (await readContract({
     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
     abi: solidFundr.abi,
     functionName: "getFunds",
-  });
-  return data as Campaign[];
+  })) as Campaign[];
+
+  // Filter data by completed
+  const filteredData = withCompleted
+    ? data
+    : data.filter((campaign: Campaign) => !campaign.completed);
+
+  // Order data
+  if (sortOrder === "DESC") {
+    filteredData.sort(
+      (a: Campaign, b: Campaign) =>
+        Number(b.creationDate) - Number(a.creationDate)
+    );
+  }
+
+  // Limit data
+  const limitedData = limit > 0 ? filteredData.slice(0, limit) : filteredData;
+
+  return limitedData as Campaign[];
 };
 
 /**
@@ -73,13 +97,13 @@ export const getDonations = async (id: number) => {
 };
 
 /**
- * Creates a campaign with the specified amount, target, title, and description.
+ * Creates a campaign with the specified amount, target address, title, and description.
  *
  * @param {string} amount - The amount of the campaign.
  * @param {string} target - The target address of the campaign.
  * @param {string} title - The title of the campaign.
  * @param {string} description - The description of the campaign.
- * @return {string} The hash of the transaction that created the campaign.
+ * @return {object} An object containing the result and hash of the campaign creation.
  */
 export const createCampaign = async (
   amount: string,
@@ -94,7 +118,10 @@ export const createCampaign = async (
     args: [parseEther(amount), target, title, description],
   });
   const { hash } = await writeContract(config);
-  return hash;
+  const result = await waitForTransaction({
+    hash,
+  });
+  return { result, hash };
 };
 
 /**
