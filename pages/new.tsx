@@ -2,8 +2,8 @@
 
 import { NextPageWithLayout } from "./_app";
 import Layout from "../components/Layout";
-import { ReactElement, useEffect, useState } from "react";
-import { getAccount } from "@wagmi/core";
+import { ReactElement, useState } from "react";
+import { watchAccount } from "@wagmi/core";
 import LoadingSpinner from "../components/LoadingSpinner";
 import MessageAlert from "../components/MessageAlert";
 import { parseErrors } from "../utils/parseErrors";
@@ -20,13 +20,12 @@ const NewCampaign: NextPageWithLayout = () => {
   const [messageStatus, setMessageStatus] = useState("");
   const [hash, setHash] = useState("");
 
-  useEffect(() => {
+  const checkAccount = watchAccount((account) => {
     setIsLoading(true);
     setMessageAlert("");
-    const account = getAccount();
     setCanCreate(account.isConnected);
     setIsLoading(false);
-  }, []);
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
