@@ -14,7 +14,6 @@ const List: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("asd");
     setIsLoading(true);
     const fetchData = async () => {
       const result: Campaign[] = await getCampaigns();
