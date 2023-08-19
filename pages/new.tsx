@@ -7,6 +7,8 @@ import solidFundr from "../abi/SolidFundr.json";
 import { getAccount, prepareWriteContract, writeContract } from "@wagmi/core";
 import { parseEther } from "viem";
 import LoadingSpinner from "../components/LoadingSpinner";
+import MessageAlert from "../components/MessageAlert";
+import { parseErrors } from "../utils/parseErrors";
 
 const NewCampaign: NextPageWithLayout = () => {
   const [title, setTitle] = useState("");
@@ -15,9 +17,13 @@ const NewCampaign: NextPageWithLayout = () => {
   const [target, setTarget] = useState("");
   const [canCreate, setCanCreate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [messageAlert, setMessageAlert] = useState("");
+  const [messageStatus, setMessageStatus] = useState("");
+  const [hash, setHash] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
+    setMessageAlert("");
     const account = getAccount();
     setCanCreate(account.isConnected);
     setIsLoading(false);
@@ -25,22 +31,39 @@ const NewCampaign: NextPageWithLayout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setMessageAlert("");
+    setMessageStatus("success");
     setIsLoading(true);
-    const config = await prepareWriteContract({
-      address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-      abi: solidFundr.abi,
-      functionName: "createFund",
-      args: [parseEther(amount), target, title, description],
-    });
-    const hash = await writeContract(config);
-    console.log(hash);
+
+    try {
+      const config = await prepareWriteContract({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        abi: solidFundr.abi,
+        functionName: "createFund",
+        args: [parseEther(amount), target, title, description],
+      });
+      const { hash } = await writeContract(config);
+      setHash(hash);
+
+      setMessageAlert("Transaction sent");
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setAmount("");
+      setTarget("");
+    } catch (error) {
+      setMessageStatus("error");
+      setMessageAlert(parseErrors(error.toString()));
+    }
+
     setIsLoading(false);
   };
 
   return (
     <main>
       {isLoading && <LoadingSpinner />}
+      <MessageAlert message={messageAlert} messageStatus={messageStatus} />
       <section className="px-8 py-8">
         <h1 className="text-4xl text-center font-semibold mb-8">
           Create New Campaign
@@ -118,6 +141,17 @@ const NewCampaign: NextPageWithLayout = () => {
             >
               Create Campaign
             </button>
+            {hash && (
+              <p className="text-center mt-8">
+                <a
+                  href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  title="View full campaign list"
+                  className="text-blue-500 font-semibold hover:underline"
+                >
+                  View Transaction
+                </a>
+              </p>
+            )}
           </form>
         ) : (
           <p className="text-center italic py-8">
