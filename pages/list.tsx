@@ -8,6 +8,7 @@ import { Campaign } from "../utils/interfaces-types";
 import { readContract } from "@wagmi/core";
 import solidFundr from "../abi/SolidFundr.json";
 import Card from "../components/Card";
+import Link from "next/link";
 
 const List: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -51,6 +52,19 @@ const List: NextPageWithLayout = () => {
         ) : (
           <p className="text-center italic py-8">No campaigns yet</p>
         )}
+      </section>
+
+      <section className="text-center p-8 bg-orange-100">
+        <p className="text-lg mb-8">
+          Anyone can open their own fundraising campaign and make a difference.
+        </p>
+        <Link
+          href="/new"
+          title="Create new campaign"
+          className="bg-orange-400 hover:bg-orange-600 py-4 px-8 rounded text-sm font-semibold"
+        >
+          Create New Campaign
+        </Link>
       </section>
     </main>
   );
