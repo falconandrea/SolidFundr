@@ -18,7 +18,6 @@ const List: NextPageWithLayout = () => {
     setIsLoading(true);
     const fetchData = async () => {
       const result: Campaign[] = await getCampaigns();
-      console.log("result", result);
       setCampaigns(result);
       setIsLoading(false);
     };
@@ -32,7 +31,6 @@ const List: NextPageWithLayout = () => {
       abi: solidFundr.abi,
       functionName: "getFunds",
     });
-    console.log("data", data);
     return data as Campaign[];
   };
 
