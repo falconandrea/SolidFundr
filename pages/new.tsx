@@ -2,8 +2,8 @@
 
 import { NextPageWithLayout } from "./_app";
 import Layout from "../components/Layout";
-import { ReactElement, useState } from "react";
-import { watchAccount } from "@wagmi/core";
+import { ReactElement, useEffect, useState } from "react";
+import { getAccount, watchAccount } from "@wagmi/core";
 import LoadingSpinner from "../components/LoadingSpinner";
 import MessageAlert from "../components/MessageAlert";
 import { parseErrors } from "../utils/parseErrors";
@@ -26,6 +26,11 @@ const NewCampaign: NextPageWithLayout = () => {
     setCanCreate(account.isConnected);
     setIsLoading(false);
   });
+
+  useEffect(() => {
+    const account = getAccount();
+    setCanCreate(account.isConnected);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,6 +141,7 @@ const NewCampaign: NextPageWithLayout = () => {
             {hash && (
               <p className="text-center mt-8">
                 <a
+                  target="_blank"
                   href={`https://sepolia.etherscan.io/tx/${hash}`}
                   title="View full campaign list"
                   className="text-blue-500 font-semibold hover:underline"
