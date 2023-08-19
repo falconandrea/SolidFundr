@@ -6,6 +6,8 @@ export const parseErrors = (err: string) => {
     return "Wrong amount in ETH";
   } else if (err.includes("User rejected the request")) {
     return "User rejected the request";
+  } else if (err.includes("FundDoesNotExist")) {
+    return "Campaign not found";
   } else {
     return "Error during transaction";
   }
