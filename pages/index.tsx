@@ -63,7 +63,7 @@ const Home: NextPageWithLayout = () => {
             </div>
             <p className="text-center mt-4">
               <Link
-                href="/campaigns"
+                href="/list"
                 title="View full campaign list"
                 className="text-blue-500 font-semibold hover:underline"
               >
