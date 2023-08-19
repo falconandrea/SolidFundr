@@ -3,12 +3,11 @@
 import { NextPageWithLayout } from "./_app";
 import Layout from "../components/Layout";
 import { ReactElement, useEffect, useState } from "react";
-import solidFundr from "../abi/SolidFundr.json";
-import { getAccount, prepareWriteContract, writeContract } from "@wagmi/core";
-import { parseEther } from "viem";
+import { getAccount } from "@wagmi/core";
 import LoadingSpinner from "../components/LoadingSpinner";
 import MessageAlert from "../components/MessageAlert";
 import { parseErrors } from "../utils/parseErrors";
+import { createCampaign } from "../utils/functions";
 
 const NewCampaign: NextPageWithLayout = () => {
   const [title, setTitle] = useState("");
@@ -36,13 +35,7 @@ const NewCampaign: NextPageWithLayout = () => {
     setIsLoading(true);
 
     try {
-      const config = await prepareWriteContract({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        abi: solidFundr.abi,
-        functionName: "createFund",
-        args: [parseEther(amount), target, title, description],
-      });
-      const { hash } = await writeContract(config);
+      const hash = await createCampaign(amount, target, title, description);
       setHash(hash);
 
       setMessageAlert("Transaction sent");

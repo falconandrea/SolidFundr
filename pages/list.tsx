@@ -5,10 +5,9 @@ import Layout from "../components/Layout";
 import { ReactElement, useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Campaign } from "../utils/interfaces-types";
-import { readContract } from "@wagmi/core";
-import solidFundr from "../abi/SolidFundr.json";
 import Card from "../components/Card";
 import Link from "next/link";
+import { getCampaigns } from "../utils/functions";
 
 const List: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -24,15 +23,6 @@ const List: NextPageWithLayout = () => {
 
     fetchData();
   }, []);
-
-  const getCampaigns = async (): Promise<Campaign[]> => {
-    const data = await readContract({
-      address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-      abi: solidFundr.abi,
-      functionName: "getFunds",
-    });
-    return data as Campaign[];
-  };
 
   return (
     <main>
