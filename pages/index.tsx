@@ -42,7 +42,7 @@ const Home: NextPageWithLayout = () => {
       </section>
       <section className="mb-8 px-8">
         <h2 className="text-lg text-center font-semibold mb-4">
-          Last Three Campaigns
+          Last three open Campaigns
         </h2>
         {campaigns.length > 0 ? (
           <div>

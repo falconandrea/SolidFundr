@@ -12,17 +12,21 @@ import { getCampaigns } from "../utils/functions";
 const List: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [filterOption, setFilterOption] = useState("all");
 
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
-      const result: Campaign[] = await getCampaigns();
+      const result: Campaign[] = await getCampaigns(
+        "ASC",
+        filterOption === "active" ? false : true
+      );
       setCampaigns(result);
       setIsLoading(false);
     };
 
     fetchData();
-  }, []);
+  }, [filterOption]);
 
   return (
     <main>
@@ -31,6 +35,19 @@ const List: NextPageWithLayout = () => {
         <h1 className="text-4xl text-center font-semibold mb-8">
           List of campaigns
         </h1>
+        <div className="flex justify-end text-right mb-4">
+          <div className="flex flex-col">
+            <label className="mr-2 mb-2">Filter for status:</label>
+            <select
+              value={filterOption}
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 max-w-[200px]"
+              onChange={(e) => setFilterOption(e.target.value)}
+            >
+              <option value="all">All</option>
+              <option value="active">Only active</option>
+            </select>
+          </div>
+        </div>
         {campaigns.length > 0 ? (
           <div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
