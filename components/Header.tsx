@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { getContributions } from "../utils/functions";
-import { formatEther, parseEther } from "viem";
+import { formatEther } from "viem";
 
 const Header = () => {
   const { isConnected, address } = useAccount();
