@@ -1,6 +1,13 @@
 import { formatEther } from "viem";
 import { ProgressBarProps } from "../utils/interfaces-types";
 
+/**
+ * Renders a progress bar component based on the provided amount and target values.
+ *
+ * @param {ProgressBarProps} amount - The amount value to be displayed on the progress bar.
+ * @param {ProgressBarProps} target - The target value to define the maximum progress of the bar.
+ * @return {JSX.Element} The rendered progress bar component.
+ */
 const ProgressBar = ({ amount, target }: ProgressBarProps) => {
   const amountValue = formatEther(amount);
   const targetValue = formatEther(target);

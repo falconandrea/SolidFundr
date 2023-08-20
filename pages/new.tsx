@@ -8,6 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import MessageAlert from "../components/MessageAlert";
 import { parseErrors } from "../utils/parseErrors";
 import { createCampaign } from "../utils/functions";
+import TransactionLink from "../components/TransactionLink";
 
 const NewCampaign: NextPageWithLayout = () => {
   const [title, setTitle] = useState("");
@@ -17,7 +18,9 @@ const NewCampaign: NextPageWithLayout = () => {
   const [canCreate, setCanCreate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messageAlert, setMessageAlert] = useState("");
-  const [messageStatus, setMessageStatus] = useState("");
+  const [messageStatus, setMessageStatus] = useState<"success" | "error">(
+    "error"
+  );
   const [hash, setHash] = useState("");
 
   const checkAccount = watchAccount((account) => {
@@ -32,6 +35,12 @@ const NewCampaign: NextPageWithLayout = () => {
     setCanCreate(account.isConnected);
   }, []);
 
+  /**
+   * Handles the form submission asynchronously.
+   *
+   * @param {React.FormEvent} e - The form event object.
+   * @return {Promise<void>} - A promise that resolves once the form submission is handled.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessageAlert("");
@@ -47,6 +56,7 @@ const NewCampaign: NextPageWithLayout = () => {
       );
       setHash(hash);
 
+      console.log(result);
       setMessageAlert("Transaction sent");
 
       // Reset form
@@ -143,18 +153,7 @@ const NewCampaign: NextPageWithLayout = () => {
             >
               Create Campaign
             </button>
-            {hash && (
-              <p className="text-center mt-8">
-                <a
-                  target="_blank"
-                  href={`https://sepolia.etherscan.io/tx/${hash}`}
-                  title="View full campaign list"
-                  className="text-blue-500 font-semibold hover:underline"
-                >
-                  View Transaction
-                </a>
-              </p>
-            )}
+            <TransactionLink hash={hash} />
           </form>
         ) : (
           <p className="text-center italic py-8">

@@ -1,3 +1,8 @@
+/**
+ * Renders a loading spinner component.
+ *
+ * @return {JSX.Element} The loading spinner component.
+ */
 const LoadingSpinner = () => {
   return (
     <div className="fixed w-full h-full top-0 left-0 z-10 bg-white">

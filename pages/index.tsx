@@ -9,6 +9,7 @@ import Layout from "../components/Layout";
 import { Campaign } from "../utils/interfaces-types";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { getCampaigns } from "../utils/functions";
+import NewCampaignWrapper from "../components/NewCampaignWrapper";
 
 const Home: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -16,6 +17,12 @@ const Home: NextPageWithLayout = () => {
 
   useEffect(() => {
     setIsLoading(true);
+
+    /**
+     * Fetches data asynchronously.
+     *
+     * @return {Promise<void>} Promise that resolves when data is fetched.
+     */
     const fetchData = async () => {
       const result: Campaign[] = await getCampaigns("DESC", false, 3);
       setCampaigns(result);
@@ -66,18 +73,7 @@ const Home: NextPageWithLayout = () => {
         )}
       </section>
 
-      <section className="text-center p-8 bg-orange-100">
-        <p className="text-lg mb-8">
-          Anyone can open their own fundraising campaign and make a difference.
-        </p>
-        <Link
-          href="/new"
-          title="Create new campaign"
-          className="bg-orange-400 hover:bg-orange-600 py-4 px-8 rounded text-sm font-semibold"
-        >
-          Create New Campaign
-        </Link>
-      </section>
+      <NewCampaignWrapper />
     </main>
   );
 };

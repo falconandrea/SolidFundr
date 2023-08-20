@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { makeDonation } from "../utils/functions";
 import { parseErrors } from "../utils/parseErrors";
+import TransactionLink from "./TransactionLink";
 
 const DonateForm = ({
   campaignId,
@@ -12,7 +13,7 @@ const DonateForm = ({
   campaignId: number;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setMessageAlert: React.Dispatch<React.SetStateAction<string>>;
-  setMessageStatus: React.Dispatch<React.SetStateAction<string>>;
+  setMessageStatus: React.Dispatch<React.SetStateAction<"success" | "error">>;
   getCampaignData: (id: number) => void;
 }) => {
   const [donationAmount, setDonationAmount] = useState("");
@@ -69,18 +70,7 @@ const DonateForm = ({
       >
         Send
       </button>
-      {hash && (
-        <p className="text-center mt-8">
-          <a
-            target="_blank"
-            href={`https://sepolia.etherscan.io/tx/${hash}`}
-            title="View full campaign list"
-            className="text-blue-500 font-semibold hover:underline"
-          >
-            View Transaction
-          </a>
-        </p>
-      )}
+      <TransactionLink hash={hash} />
     </form>
   );
 };

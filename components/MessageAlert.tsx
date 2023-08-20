@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Renders a message alert component based on the provided message and message status.
+ *
+ * @param {string} message - The message to display in the alert.
+ * @param {string} messageStatus - The status of the message (e.g., "error" or "success").
+ * @returns {JSX.Element | null} The rendered message alert component, or null if the alert is not visible.
+ */
 const MessageAlert = ({
   message,
   messageStatus,
 }: {
   message: string;
-  messageStatus: string;
+  messageStatus: "error" | "success";
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -13,7 +20,7 @@ const MessageAlert = ({
     if (message) {
       setIsVisible(true);
 
-      // Nascondi l'avviso dopo 5 secondi
+      // Hide alert after 5 seconds
       const timeoutId = setTimeout(() => {
         setIsVisible(false);
       }, 5000);

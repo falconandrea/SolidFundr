@@ -1,3 +1,8 @@
+/**
+ * Renders the footer component.
+ *
+ * @return {JSX.Element} The footer component.
+ */
 const Footer = () => {
   return (
     <footer className="text-center p-4 bg-orange-400">

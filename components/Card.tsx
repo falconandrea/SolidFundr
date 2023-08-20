@@ -4,6 +4,12 @@ import Link from "next/link";
 import { formatTimestamp } from "../utils/functions";
 import CopyAddress from "./CopyAddress";
 
+/**
+ * Renders a card component for a given campaign.
+ *
+ * @param {CardProps} campaign - The campaign object containing the title, description, creator, target address, creation date, amount, target amount, and ID.
+ * @returns {JSX.Element} - The rendered card component.
+ */
 const Card = ({ campaign }: CardProps) => {
   return (
     <div className="bg-white p-10 rounded-lg border border-gray-300">

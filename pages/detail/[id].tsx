@@ -16,7 +16,9 @@ import CopyAddress from "../../components/CopyAddress";
 const DetailPage: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messageAlert, setMessageAlert] = useState("");
-  const [messageStatus, setMessageStatus] = useState("");
+  const [messageStatus, setMessageStatus] = useState<"success" | "error">(
+    "error"
+  );
   const [campaign, setCampaign] = useState<Campaign>();
   const [listDonations, setListDonations] = useState<Donation[]>([]);
   const [campaignId, setCampaignId] = useState(-1);
@@ -24,6 +26,7 @@ const DetailPage: NextPageWithLayout = () => {
 
   const router = useRouter();
 
+  // Use this function to check change account or connect/disconnect
   const checkAccount = watchAccount((account) => {
     setIsLoading(true);
     setMessageAlert("");
@@ -31,6 +34,12 @@ const DetailPage: NextPageWithLayout = () => {
     setIsLoading(false);
   });
 
+  /**
+   * Retrieves campaign data based on the provided ID.
+   *
+   * @param {number} id - The ID of the campaign to retrieve data for.
+   * @return {Promise<void>} - A promise that resolves when the campaign data has been retrieved and processed.
+   */
   const getCampaignData = async (id: number) => {
     const result: Campaign | null = await getCampaign(id);
     if (result) {

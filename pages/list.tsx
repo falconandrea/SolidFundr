@@ -6,8 +6,8 @@ import { ReactElement, useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { Campaign } from "../utils/interfaces-types";
 import Card from "../components/Card";
-import Link from "next/link";
 import { getCampaigns } from "../utils/functions";
+import NewCampaignWrapper from "../components/NewCampaignWrapper";
 
 const List: NextPageWithLayout = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -16,6 +16,12 @@ const List: NextPageWithLayout = () => {
 
   useEffect(() => {
     setIsLoading(true);
+
+    /**
+     * Fetches data from the server asynchronously.
+     *
+     * @return {Promise<void>} A promise that resolves when the data is fetched successfully.
+     */
     const fetchData = async () => {
       const result: Campaign[] = await getCampaigns(
         "ASC",
@@ -61,18 +67,7 @@ const List: NextPageWithLayout = () => {
         )}
       </section>
 
-      <section className="text-center p-8 bg-orange-100">
-        <p className="text-lg mb-8">
-          Anyone can open their own fundraising campaign and make a difference.
-        </p>
-        <Link
-          href="/new"
-          title="Create new campaign"
-          className="bg-orange-400 hover:bg-orange-600 py-4 px-8 rounded text-sm font-semibold"
-        >
-          Create New Campaign
-        </Link>
-      </section>
+      <NewCampaignWrapper />
     </main>
   );
 };

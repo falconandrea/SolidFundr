@@ -5,6 +5,11 @@ import { useAccount } from "wagmi";
 import { getContributions } from "../utils/functions";
 import { formatEther } from "viem";
 
+/**
+ * Generates the header component.
+ *
+ * @returns {JSX.Element} - Returns the JSX element representing the header component.
+ */
 const Header = () => {
   const { isConnected, address } = useAccount();
   const [showDonations, setShowDonations] = useState(false);
@@ -13,6 +18,11 @@ const Header = () => {
   useEffect(() => {
     setShowDonations(isConnected);
 
+    /**
+     * Retrieves the amount of donations of a given address.
+     *
+     * @return {Promise<void>} - Returns a promise that resolves to void.
+     */
     const getDonationsAmount = async () => {
       const value = await getContributions(address as `0x${string}`);
       setContributionAmount(formatEther(value));
