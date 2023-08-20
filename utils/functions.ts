@@ -145,3 +145,19 @@ export const makeDonation = async (id: number, amount: string) => {
   });
   return { result, hash };
 };
+
+/**
+ * Retrieves the contribution amount for a given address.
+ *
+ * @param {string} address - The address for which to retrieve the contribution amount.
+ * @return {bigint} The contribution amount for the given address.
+ */
+export const getContributions = async (address: `0x${string}`) => {
+  const contributionAmount = (await readContract({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: solidFundr.abi,
+    functionName: "getContributions",
+    args: [address],
+  })) as bigint;
+  return contributionAmount;
+};
